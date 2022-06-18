@@ -1,10 +1,10 @@
-var rpc = require('json-rpc2');
+const rpc = require('json-rpc2');
 require('dotenv').config();
 
 //import { ITransaction } from "../model/ITransaction";
 import { EthTransaction } from "../model/EthTransaction";
 
-var server = rpc.Server.$create({
+const server = rpc.Server.$create({
     'websocket': true, // is true by default
     'headers': { // allow custom headers is empty by default
         'Access-Control-Allow-Origin': '*'
