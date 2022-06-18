@@ -42,7 +42,7 @@ export class EthTransaction implements ITransaction {
           });*/
 
         console.log(`🎉 Check transaction! https://ropsten.etherscan.io/tx/${tx.transactionHash}`);
-        return tx.transactionHash;;
+        return tx.transactionHash;
     }
 
     async get(hash: string) {
@@ -50,7 +50,7 @@ export class EthTransaction implements ITransaction {
         const web3 = new Web3(this.api_key)
         const txReceipt = await web3.eth.getTransactionReceipt(hash);
 
-        let txObj = new Transaction();
+        const txObj = new Transaction();
 
         if(txReceipt == null){
             console.log("❗Transaction is pending...")

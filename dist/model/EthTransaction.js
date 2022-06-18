@@ -43,7 +43,6 @@ class EthTransaction {
               });*/
             console.log(`🎉 Check transaction! https://ropsten.etherscan.io/tx/${tx.transactionHash}`);
             return tx.transactionHash;
-            ;
         });
     }
     get(hash) {
@@ -51,7 +50,7 @@ class EthTransaction {
             const Web3 = require('web3');
             const web3 = new Web3(this.api_key);
             const txReceipt = yield web3.eth.getTransactionReceipt(hash);
-            let txObj = new ITransaction_1.Transaction();
+            const txObj = new ITransaction_1.Transaction();
             if (txReceipt == null) {
                 console.log("❗Transaction is pending...");
                 return txObj;

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var rpc = require('json-rpc2');
+const rpc = require('json-rpc2');
 require('dotenv').config();
 //import { ITransaction } from "../model/ITransaction";
 const EthTransaction_1 = require("../model/EthTransaction");
-var server = rpc.Server.$create({
+const server = rpc.Server.$create({
     'websocket': true,
     'headers': {
         'Access-Control-Allow-Origin': '*'

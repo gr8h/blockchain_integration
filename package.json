@@ -2,11 +2,11 @@
   "name": "blockchain_integration",
   "version": "1.0.0",
   "description": "Blockchain Integration",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon dist/api/index.js",
-    "build": "npx tsc"
+    "start": "tsc && nodemon dist/api/index.js",
+    "lint": "eslint . --ext .ts"
   },
   "author": "Hesham Shabanah",
   "license": "ISC",
@@ -16,6 +16,9 @@
     "web3": "^1.7.3"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^8.18.0",
     "nodemon": "^2.0.16",
     "typescript": "^4.7.4"
   }
