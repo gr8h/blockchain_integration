@@ -1,4 +1,6 @@
-import { ITransaction, Transaction } from "../model/ITransaction";
+import { ITransaction } from "./interface/ITransaction";
+import { Transaction} from "./model/Transaction"
+import { CustomException } from "../exceptions/CustomException";
 
 export class EthTransaction implements ITransaction {
     
@@ -18,7 +20,8 @@ export class EthTransaction implements ITransaction {
 
         const balance = await web3.eth.getBalance(this.signer_account);
         if(balance < amount) {
-            console.log("❗Not enough balance.")
+            console.log('❗Not enough balance.');
+            throw new CustomException(402,'Not enough balance.');
         }
 
         const nonce = await web3.eth.getTransactionCount(this.signer_account, 'latest');
@@ -32,17 +35,12 @@ export class EthTransaction implements ITransaction {
 
         const signedTx = await web3.eth.accounts.signTransaction(transaction, this.signer_private_key)
 
-        const tx = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-        
-        /*web3.eth.sendSignedTransaction(signedTx.rawTransaction).then((value) => {
-            console.log(`🎉 Check transaction! https://ropsten.etherscan.io/tx/${value.transactionHash}`);
-            return value.transactionHash;
+        web3.eth.sendSignedTransaction(signedTx.rawTransaction).then((value) => {
+            console.log(`🎉Check transaction! https://ropsten.etherscan.io/tx/${value.transactionHash}`);
           }).catch((err) => {
             console.log("❗Something went wrong while submitting your transaction:", err)
-          });*/
-
-        console.log(`🎉 Check transaction! https://ropsten.etherscan.io/tx/${tx.transactionHash}`);
-        return tx.transactionHash;
+            throw err;
+          });
     }
 
     async get(hash: string) {
@@ -52,14 +50,14 @@ export class EthTransaction implements ITransaction {
 
         const txObj = new Transaction();
 
-        if(txReceipt == null){
+        if(txReceipt == null) {
             console.log("❗Transaction is pending...")
-            return txObj;
+            throw new CustomException(404,'Transaction is pending...');
         }
 
         if(!txReceipt.status) {
             console.log("❗Transaction is reverted...")
-            return txObj;
+            throw new CustomException(404,'Transaction is reverted.');
         }
         const tx = await web3.eth.getTransaction(hash);
 
