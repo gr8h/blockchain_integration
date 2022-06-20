@@ -1,5 +1,5 @@
-import { ITransaction } from "./interface/ITransaction";
-import { Transaction} from "./model/Transaction"
+import { ITransaction, BlockchainTypes } from "./interface/ITransaction";
+import { Transaction } from "./model/Transaction"
 import { CustomException } from "../exceptions/CustomException";
 
 export class EthTransaction implements ITransaction {
@@ -12,6 +12,9 @@ export class EthTransaction implements ITransaction {
         this.api_key = process.env.ETH_API_URL;
         this.signer_private_key = process.env.ETH_PRIVATE_KEY;
         this.signer_account = process.env.ETH_ACCOUNT;
+    }
+    checkType (type: BlockchainTypes) {
+        return type == BlockchainTypes.ETH;
     }
 
     async send(to: string, amount: string) {
