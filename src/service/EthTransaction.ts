@@ -21,7 +21,8 @@ export class EthTransaction implements ITransaction {
         const Web3 = require('web3')
         const web3 = new Web3(this.api_key)
 
-        const balance = await web3.eth.getBalance(this.signer_account);
+        const balanceWei = await web3.eth.getBalance(this.signer_account);
+        const balance = web3.utils.fromWei(balanceWei.toString(), 'ether');
         if(balance < amount) {
             console.log('❗Not enough balance.');
             throw new CustomException(402,'Not enough balance.');

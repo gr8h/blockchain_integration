@@ -1,15 +1,15 @@
 const rpc = require('json-rpc2');
 require('dotenv').config();
 
-import { TransactionStrategyFactory } from "../service/TransactionStrategyFactory"; 
+import { TransactionStrategyFactory } from "../service/interface/TransactionStrategyFactory"; 
 import { CustomException } from "../exceptions/CustomException";
 import { BlockchainTypes } from "../service/interface/ITransaction";
 
 const server = rpc.Server.$create({
-'websocket': true, // is true by default
-'headers': { // allow custom headers is empty by default
-	'Access-Control-Allow-Origin': '*'
-}
+	'websocket': true,
+	'headers': { 
+		'Access-Control-Allow-Origin': '*'
+	}
 });
 
 server.on('error', function (err){
@@ -74,7 +74,7 @@ server.expose('send', send);
 server.expose('get', get);
 
 // listen creates an HTTP server on localhost only
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 server.listen(port, () => {
-console.log(`🎉 Listening: http://localhost:${port}`);
+	console.log(`🎉 Listening: http://localhost:${port}`);
 });
