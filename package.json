@@ -8,6 +8,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "start": "tsc && nodemon dist/api/index.js",
+    "build": "tsc",
     "lint": "eslint . --ext .ts"
   },
   "author": "Hesham Shabanah",
@@ -33,7 +34,6 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
-    ],
-    "testTimeout": 30000
+    ]
   }
 }

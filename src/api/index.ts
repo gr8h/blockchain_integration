@@ -22,14 +22,14 @@ async function send(args, opt, callback) {
 	const amount = args[1]
 	const blockchain = args[2]
 
-	let typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
+	const typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
 
 	try {
 
 		const txObj = TransactionStrategyFactory.getTransactiontrategy(BlockchainTypes[typedBlockchainString]);
 		await txObj.send(to, amount);
 
-		callback(null, "🎉 Transaction sent");
+		callback(null, "Transaction sent");
 
 	} catch (err) {
 		callback(err);
@@ -52,7 +52,7 @@ function get(args, opt, callback) {
 	}
 
 	try {
-		let typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
+		const typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
 
 		const ethTx = TransactionStrategyFactory.getTransactiontrategy(BlockchainTypes[typedBlockchainString]);
 		const promise = ethTx.get(txHash);

@@ -1,91 +1,48 @@
+var rpc = require('json-rpc2');
 require('dotenv').config();
 
-const app = require('../api/index')
-const supertest = require('supertest')
-const request = supertest(app)
-const assert = require('assert');
+var client = rpc.Client.$create(process.env.PORT, 'localhost');
+
 
 it('Test Get transaction Sucessful', async done => {
-    const response = await request.post('/')
-        .send(
-            {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "get",
-                "params": ["0x2baacbc52190c6b52381c663a695d4b1d6afba8ed398406755f6fbd9a49005bd", "Eth"]
-            }
-        )
-    .expect(200)
-    .expect('Content-Type', 'application/json')
-    .expect(function(res) {
-        assert(res.body.hasOwnProperty('amount'));
-        assert(res.body.hasOwnProperty('from'));
-        assert(res.body.hasOwnProperty('hash'));
-        assert(res.body.hasOwnProperty('to'));
-        assert(res.body.hasOwnProperty('fee'));
-  })
-  .end(function(err, res) {
-    if (err) throw err;
-  });
-    done()
+
+    const res = client.call('get', ["0x2baacbc52190c6b52381c663a695d4b1d6afba8ed398406755f6fbd9a49005bd", "Eth"]);
+    expect(res.httpCode).toBe(200);
+    var decoded = JSON.parse(res.httpBody);
+    expect(decoded.id).toBe(1);
+    expect(decoded.error).toBe(undefined);
+    
+    expect(decoded.result).toBe({
+        "amount": "0.01",
+        "from": "0x50dbFC5D125dF1835BEe19eCEE63E46cdafD715d",
+        "hash": "0x2baacbc52190c6b52381c663a695d4b1d6afba8ed398406755f6fbd9a49005bd",
+        "to": "0x5A3Da324Bf0470d18C808fcC974a428558A41Ef0",
+        "fee": "0.000021000000147"
+    });
+
+    done();
 });
 
 it('Test Get transaction Error', async done => {
-    const response = await request.post('/')
-        .send(
-            {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "get",
-                "params": ["0x2baacbc52190c6b52381c663a695d4b1d6afba8ed398406755f6fbd9a49005bd_bad", "Eth"]
-            }
-        )
-    .expect(200)
-    .expect('Content-Type', 'application/json')
-    .expect(function(res) {
-        assert(res.body.hasOwnProperty('error'));
-    })
-    .end(function(err, res) {
-        if (err) throw err;
-    });
-    done()
-});
 
-it('Test Post transaction', async done => {
-    const response = await request.post('/')
-        .send(
-            {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "send",
-                "params": ["0x5A3Da324Bf0470d18C808fcC974a428558A41Ef0", "0.001", "Eth"]
-            }
-        )
-    .expect(200)
-    .expect('Content-Type', 'application/json')
-    .end(function(err, res) {
-        if (err) throw err;
-    });
-    done()
+    const res = client.call('get', ["0x2baacbc52190c6b52381c663a695d4b1d6afba8ed398406755f6fbd9a49005bd", "XRP"]);
+
+    var decoded = JSON.parse(res.httpBody);
+    expect(decoded.id).toBe(1);
+    expect(decoded.error.message).toBe('Error: Unknown Blockchain type, please use Eth for Etherum or Sol for Solana');
+    expect(decoded.error.code).toBe(-32603);
+
+    done();
 });
 
 it('Test Post transaction Wrong Type', async done => {
-    const response = await request.post('/')
-        .send(
-            {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "send",
-                "params": ["0x5A3Da324Bf0470d18C808fcC974a428558A41Ef0", "0.001", "XRP"]
-            }
-        )
-    .expect(200)
-    .expect('Content-Type', 'application/json')
-    .expect(function(res) {
-        assert(res.body.hasOwnProperty('error'));
-    })
-    .end(function(err, res) {
-        if (err) throw err;
-    });
-    done()
+
+    const res = await client.call('send', ["0x5A3Da324Bf0470d18C808fcC974a428558A41Ef0", "0.001", "XRP"]);
+    
+    var decoded = JSON.parse(res.httpBody);
+    expect(decoded.id).toBe(1);
+    expect(decoded.error.message).toBe('Error: Unknown Blockchain type, please use Eth for Etherum or Sol for Solana');
+    expect(decoded.error.code).toBe(-32603);
+
+    done();
 });
