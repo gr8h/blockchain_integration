@@ -1,4 +1,4 @@
-import { Transaction} from "../model/Transaction"
+import { ReturnedTransaction} from "../model/ReturnedTransaction"
 
 export enum BlockchainTypes {ETH, SOL}
 
@@ -12,5 +12,5 @@ export interface ITransaction {
 
     send: (to: string, amount: string) => void;
 
-    get: (hash: string) => Promise<Transaction>;
+    get: (hash: string) => Promise<ReturnedTransaction>;
 }

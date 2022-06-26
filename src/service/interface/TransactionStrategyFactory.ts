@@ -1,6 +1,6 @@
 import { EthTransaction } from "../EthTransaction";
 import { SolTransaction } from "../SolTransaction";
-import { CustomException } from "../../exceptions/CustomException";
+import { CustomException } from "../../exception/CustomException";
 import { ITransaction, BlockchainTypes } from "./ITransaction";
 
 export class TransactionStrategyFactory {

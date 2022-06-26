@@ -1,5 +1,5 @@
 import { BlockchainTypes, ITransaction } from "./interface/ITransaction";
-import { CustomException } from "../exceptions/CustomException";
+import { CustomException } from "../exception/CustomException";
 
 export class SolTransaction implements ITransaction {
    

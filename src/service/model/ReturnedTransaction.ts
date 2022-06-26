@@ -1,4 +1,4 @@
-export class Transaction {
+export class ReturnedTransaction {
     from: string;
     to: string;
     amount: string;

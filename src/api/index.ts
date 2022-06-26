@@ -1,80 +1,58 @@
-const rpc = require('json-rpc2');
 require('dotenv').config();
+const jayson = require('jayson/promise');
 
 import { TransactionStrategyFactory } from "../service/interface/TransactionStrategyFactory"; 
-import { CustomException } from "../exceptions/CustomException";
+import { CustomException } from "../exception/CustomException";
 import { BlockchainTypes } from "../service/interface/ITransaction";
 
-const server = rpc.Server.$create({
-	'websocket': true,
-	'headers': { 
-		'Access-Control-Allow-Origin': '*'
-	}
-});
+const server = new jayson.Server({
 
-server.on('error', function (err){
-	console.log(err);
-});
+	send_transaction: async function(args) {
+		
+		const to = args[0]
+		const amount = args[1]
+		const blockchain = args[2]
 
-async function send(args, opt, callback) {
-
-	const to = args[0]
-	const amount = args[1]
-	const blockchain = args[2]
-
-	const typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
-
-	try {
-
-		const txObj = TransactionStrategyFactory.getTransactiontrategy(BlockchainTypes[typedBlockchainString]);
-		await txObj.send(to, amount);
-
-		callback(null, "Transaction sent");
-
-	} catch (err) {
-		callback(err);
-	}
-}
-
-function get(args, opt, callback) {
-
-	const txHash = args[0]
-	const blockchain = args[1]
-
-	if (!txHash) {
-		const ex = new CustomException(400,'TransactionHash arguemnt is missing. [TransactionHash, Blockchain]');
-		callback(ex);
-	}
-
-	if (!blockchain) {
-		const ex = new CustomException(400,'Blockchain arguemnt is missing. [TransactionHash, Blockchain]');
-		callback(ex);
-	}
-
-	try {
 		const typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
 
-		const ethTx = TransactionStrategyFactory.getTransactiontrategy(BlockchainTypes[typedBlockchainString]);
-		const promise = ethTx.get(txHash);
+		try {
 
-		promise.then((value) => {
-			console.log(value);
-			callback(null, value);
-		}).catch((err) => {
-			callback(err);
-			console.log(err);
-		});
+			const txObj = TransactionStrategyFactory.getTransactiontrategy(BlockchainTypes[typedBlockchainString]);
+			await txObj.send(to, amount);
+	
+			return "Transaction sent."
+	
+		} catch (ex) {
+			throw server.error(ex.status, ex.message);
+		}
+	},
 
-	} catch (err){
-		callback(err);
+	get_transaction: async function(args) {
+		
+		const txHash = args[0]
+		const blockchain = args[1]
+
+		if (!txHash || !blockchain) {
+			const ex = new CustomException(400,'Please send the correct arguemnt. [TransactionHash, Blockchain(ETH, SOL)]');
+			throw server.error(ex.status, ex.message);
+		}
+	
+		try {
+			const typedBlockchainString: keyof typeof BlockchainTypes = blockchain.toUpperCase();
+	
+			const ethTx = TransactionStrategyFactory.getTransactiontrategy(BlockchainTypes[typedBlockchainString]);
+			const promise = await ethTx.get(txHash);
+	
+			return promise;
+	
+		} catch (ex){
+			throw server.error(ex.status, ex.message);
+		}
 	}
-}
 
-server.expose('send', send);
-server.expose('get', get);
+});
 
-// listen creates an HTTP server on localhost only
 const port = process.env.PORT;
-server.listen(port, () => {
+server.http().listen(port, () => {
 	console.log(`🎉 Listening: http://localhost:${port}`);
 });

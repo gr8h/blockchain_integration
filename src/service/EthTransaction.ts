@@ -1,6 +1,6 @@
 import { ITransaction, BlockchainTypes } from "./interface/ITransaction";
-import { Transaction } from "./model/Transaction"
-import { CustomException } from "../exceptions/CustomException";
+import { ReturnedTransaction } from "./model/ReturnedTransaction"
+import { CustomException } from "../exception/CustomException";
 
 export class EthTransaction implements ITransaction {
     
@@ -52,7 +52,7 @@ export class EthTransaction implements ITransaction {
         const web3 = new Web3(this.api_key)
         const txReceipt = await web3.eth.getTransactionReceipt(hash);
 
-        const txObj = new Transaction();
+        const txObj = new ReturnedTransaction();
 
         if(txReceipt == null) {
             console.log("❗Transaction is pending...")
