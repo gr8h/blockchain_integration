@@ -1,4 +1,4 @@
-# Mad Alien Invasion
+# Blockchain Integration
 
 The purpose of this to be able to issue transactions on different blockchains.
 Currently only ETH blockchain is implemented.
